@@ -1,20 +1,20 @@
 {
   "publisher": "qzsiniong",
-  "name": "ext-name",
-  "displayName": "ext-name",
+  "name": "vscode-json-preview",
+  "displayName": "vscode-json-preview",
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@10.4.1",
   "description": "",
   "author": "Qzsiniong <qzsiniong@163.com>",
   "license": "MIT",
-  "homepage": "https://github.com/qzsiniong/ext-name#readme",
+  "homepage": "https://github.com/qzsiniong/vscode-json-preview#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/qzsiniong/ext-name"
+    "url": "https://github.com/qzsiniong/vscode-json-preview"
   },
   "bugs": {
-    "url": "https://github.com/qzsiniong/ext-name/issues"
+    "url": "https://github.com/qzsiniong/vscode-json-preview/issues"
   },
   "categories": [
     "Other"
@@ -33,11 +33,34 @@
     "onStartupFinished"
   ],
   "contributes": {
-    "commands": [],
+    "commands": [
+      {
+        "command": "jsonPreview.showPreview",
+        "title": "Show JSON Preview"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "jsonPreview.showPreview",
+        "key": "ctrl+alt+j",
+        "when": "editorTextFocus"
+      }
+    ],
     "configuration": {
       "type": "object",
-      "title": "ext-name",
-      "properties": {}
+      "title": "json-preview",
+      "properties": {
+        "jsonPreview.useWebview": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use webview to render JSON"
+        },
+        "jsonPreview.moveToNewWindow": {
+          "type": "boolean",
+          "default": true,
+          "description": "Move to new window when preview"
+        }
+      }
     }
   },
   "scripts": {

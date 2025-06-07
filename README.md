@@ -7,7 +7,10 @@
 
 <!-- configs -->
 
-**No data**
+| Key                           | Description                     | Type      | Default |
+| ----------------------------- | ------------------------------- | --------- | ------- |
+| `jsonPreview.useWebview`      | Use webview to render JSON      | `boolean` | `false` |
+| `jsonPreview.moveToNewWindow` | Move to new window when preview | `boolean` | `true`  |
 
 <!-- configs -->
 
@@ -15,7 +18,9 @@
 
 <!-- commands -->
 
-**No data**
+| Command                   | Title             |
+| ------------------------- | ----------------- |
+| `jsonPreview.showPreview` | Show JSON Preview |
 
 <!-- commands -->
 
