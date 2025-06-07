@@ -3,22 +3,42 @@ import * as vscode from 'vscode'
 import { getConfig } from './config'
 
 import * as meta from './generated/meta'
+import { toMarkdownString } from './utils'
 import { getWebviewContent } from './webviewContent'
 
 const { activate, deactivate } = defineExtension((context) => {
-  const disposable = vscode.commands.registerCommand(meta.commands.jsonPreviewShowPreview, async () => {
-    const editor = vscode.window.activeTextEditor
-    if (!editor) {
-      vscode.window.showErrorMessage('No active editor found.')
-      return
-    }
+  let disposable = vscode.languages.registerHoverProvider('*', {
+    provideHover(document, position) {
+      const selection = vscode.window.activeTextEditor?.selection
+      if (!selection?.contains(position)) {
+        return null
+      }
+      const selectedText = document.getText(selection)
+      // Encode the command arguments
+      const encodedArgs = encodeURIComponent(JSON.stringify({ text: selectedText }))
+      const md = toMarkdownString(selectedText, { text: 'view in new window', link: `command:${meta.commands.jsonPreviewShowPreview}?${encodedArgs}` })
+      if (!md) {
+        return null
+      }
 
-    const selection = editor.selection
-    const selectedText = editor.document.getText(selection)
+      return new vscode.Hover(md)
+    },
+  })
+  context.subscriptions.push(disposable)
+
+  disposable = vscode.commands.registerCommand(meta.commands.jsonPreviewShowPreview, async (args: { text: string } | undefined = undefined) => {
+    const editor = vscode.window.activeTextEditor
+
+    let text = args?.text || ''
+
+    if (!text && editor) {
+      const selection = editor.selection
+      text = editor.document.getText(selection)
+    }
 
     let json
     try {
-      json = JSON.parse(selectedText)
+      json = JSON.parse(text)
     }
     catch {
       vscode.window.showErrorMessage('Selected text is not valid JSON.')
