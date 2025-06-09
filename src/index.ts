@@ -7,6 +7,7 @@ import { toMarkdownString } from './utils'
 import { getWebviewContent } from './webviewContent'
 
 const { activate, deactivate } = defineExtension((context) => {
+  vscode.window.showInformationMessage('JSON Preview is activated.')
   let disposable = vscode.languages.registerHoverProvider('*', {
     provideHover(document, position) {
       const selection = vscode.window.activeTextEditor?.selection
@@ -62,7 +63,9 @@ const { activate, deactivate } = defineExtension((context) => {
 
     // move to new window
     if (getConfig('jsonPreview.moveToNewWindow')) {
-      vscode.commands.executeCommand('workbench.action.moveEditorToNewWindow')
+      await vscode.commands.executeCommand('workbench.action.moveEditorToNewWindow')
+      await vscode.commands.executeCommand('workbench.action.enableWindowAlwaysOnTop')
+      await vscode.commands.executeCommand('workbench.action.enableCompactAuxiliaryWindow')
     }
   })
 
