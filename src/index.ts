@@ -3,11 +3,15 @@ import * as vscode from 'vscode'
 import { getConfig } from './config'
 
 import * as meta from './generated/meta'
+import { registerJsonPreviewContentProvider } from './jsonPreviewContentProvider'
 import { toMarkdownString } from './utils'
 import { getWebviewContent } from './webviewContent'
 
 const { activate, deactivate } = defineExtension((context) => {
-  vscode.window.showInformationMessage('JSON Preview is activated.')
+  // vscode.window.showInformationMessage('JSON Preview is activated.')
+
+  const { parseJsonPreviewUri } = registerJsonPreviewContentProvider(context)
+
   let disposable = vscode.languages.registerHoverProvider('*', {
     provideHover(document, position) {
       const selection = vscode.window.activeTextEditor?.selection
@@ -57,8 +61,12 @@ const { activate, deactivate } = defineExtension((context) => {
       panel.webview.html = getWebviewContent(json)
     }
     else {
-      const document = await vscode.workspace.openTextDocument({ language: 'jsonc', content: JSON.stringify(json, null, 2) })
-      await vscode.window.showTextDocument(document)
+      // const document = await vscode.workspace.openTextDocument({ language: 'jsonc', content: JSON.stringify(json, null, 2) })
+      // await vscode.window.showTextDocument(document)
+
+      const uri = parseJsonPreviewUri(json)
+      const doc = await vscode.workspace.openTextDocument(uri)
+      await vscode.window.showTextDocument(doc)
     }
 
     // move to new window
